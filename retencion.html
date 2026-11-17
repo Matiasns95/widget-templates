@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistente de Retención - Clarín Digital</title>
+  <style>
+    :root {
+      --clarin-red: #e31219;
+      --clarin-dark-red: #b30c12;
+      --navy-900: #0f172a;
+      --navy-800: #1e293b;
+      --navy-700: #334155;
+      --navy-50: #f8fafc;
+      --navy-100: #f1f5f9;
+      --border-color: #cbd5e1;
+      --primary: #1d4ed8;
+      --primary-light: #eff6ff;
+      --mandatory: #b91c1c;
+      --mandatory-bg: #fef2f2;
+      --mandatory-border: #fca5a5;
+      --suggested: #047857;
+      --suggested-bg: #ecfdf5;
+      --suggested-border: #6ee7b7;
+      --optional: #475569;
+      --optional-bg: #f8fafc;
+      --optional-border: #cbd5e1;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --warning-border: #fcd34d;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f3f4f6;
+      color: var(--navy-900);
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 6px solid var(--clarin-red);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-titles h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-titles h1 span.badge-header {
+      background: #fee2e2;
+      color: var(--clarin-red);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-titles p {
+      font-size: 13px;
+      color: var(--navy-700);
+      margin-top: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background: var(--navy-100);
+      color: var(--navy-800);
+      border-color: var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-primary {
+      background: var(--clarin-red);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--clarin-dark-red);
+    }
+
+    /* MAIN GRID */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* FILTER PANEL */
+    .panel {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--navy-100);
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy-800);
+      margin-bottom: 6px;
+    }
+
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-color);
+      background: white;
+      font-size: 14px;
+      color: var(--navy-900);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-group select:focus, .form-group input:focus {
+      border-color: var(--primary);
+    }
+
+    /* SWITCH / TOGGLES */
+    .toggle-group {
+      background: var(--navy-50);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .toggle-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy-800);
+    }
+
+    .switch-pill {
+      display: inline-flex;
+      background: #e2e8f0;
+      padding: 2px;
+      border-radius: 20px;
+    }
+
+    .switch-pill button {
+      border: none;
+      background: transparent;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 16px;
+      cursor: pointer;
+      color: var(--navy-700);
+    }
+
+    .switch-pill button.active {
+      background: white;
+      color: var(--navy-900);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    /* SEARCH FILTER */
+    .search-box {
+      margin-top: 14px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 9px 12px 9px 34px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-color);
+      font-size: 13px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    /* RESULTS AREA */
+    .results-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* OPERATIONAL ALERTS BANNER */
+    .alert-banner {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      border-left: 5px solid;
+      box-shadow: var(--shadow-sm);
+      font-size: 13.5px;
+    }
+
+    .alert-high-priority {
+      border-color: #dc2626;
+      background: #fff5f5;
+    }
+    .alert-high-priority h4 {
+      color: #991b1b;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .alert-warning {
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+    .alert-warning h4 {
+      color: #92400e;
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .alert-protocol {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    .alert-protocol h4 {
+      color: #1e40af;
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    /* SECTIONS OF TOOLS */
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .section-mandatory .section-title { color: var(--mandatory); }
+    .section-mandatory .count-badge { background: #fee2e2; color: var(--mandatory); }
+
+    .section-suggested .section-title { color: var(--suggested); }
+    .section-suggested .count-badge { background: #d1fae5; color: var(--suggested); }
+
+    .section-optional .section-title { color: var(--optional); }
+    .section-optional .count-badge { background: #e2e8f0; color: var(--optional); }
+
+    /* TOOL CARD */
+    .tool-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tool-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1.5px solid;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow 0.15s ease;
+    }
+    .tool-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .tool-card.card-mandatory {
+      border-color: var(--mandatory-border);
+    }
+    .tool-card.card-suggested {
+      border-color: var(--suggested-border);
+    }
+    .tool-card.card-optional {
+      border-color: var(--optional-border);
+    }
+
+    .card-header-bar {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: rgba(0,0,0,0.015);
+    }
+
+    .card-mandatory .card-header-bar { background: var(--mandatory-bg); }
+    .card-suggested .card-header-bar { background: var(--suggested-bg); }
+    .card-optional .card-header-bar { background: #f8fafc; }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-tool-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy-900);
+    }
+
+    .tag-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-mandatory { background: #ef4444; color: white; }
+    .tag-suggested { background: #10b981; color: white; }
+    .tag-optional { background: #64748b; color: white; }
+
+    .card-body {
+      padding: 16px 18px;
+    }
+
+    .card-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+      background: var(--navy-50);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .detail-item {
+      font-size: 12px;
+    }
+    .detail-item .label {
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      margin-bottom: 2px;
+    }
+    .detail-item .val {
+      font-weight: 700;
+      color: var(--navy-900);
+      font-size: 13.5px;
+    }
+
+    /* INSTRUCTION BOX */
+    .instruction-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+
+    .instruction-box .inst-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .inst-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      color: #0f172a;
+      background: #edf2f7;
+      padding: 6px 10px;
+      border-radius: 4px;
+      display: block;
+      word-break: break-all;
+      border-left: 3px solid var(--navy-700);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* NOTES AND RESTRICTIONS */
+    .card-footer-notes {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 8px;
+    }
+
+    .card-footer-notes ul {
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+
+    /* GLOBAL OBSERVATIONS PANEL */
+    .obs-panel {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border-top: 4px solid var(--navy-700);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .obs-panel h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--navy-900);
+    }
+
+    .obs-panel ul {
+      padding-left: 20px;
+      font-size: 13px;
+      color: var(--navy-800);
+      line-height: 1.6;
+    }
+
+    .obs-panel li {
+      margin-bottom: 6px;
+    }
+
+    /* JSON MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      max-width: 800px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-body textarea {
+      width: 100%;
+      height: 400px;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+    }
+
+    .empty-state {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 40px 20px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .accordion-toggle {
+      background: #f1f5f9;
+      border: none;
+      width: 100%;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <header>
+    <div class="header-titles">
+      <h1>
+        Clarín Digital | Retención
+        <span class="badge-header">DESDE 01.09.2026</span>
+      </h1>
+      <p>Asistente operativo de consulta inmediata para operadores de atención al cliente y retenciones.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="resetForm()">🔄 Nueva Consulta</button>
+      <button class="btn btn-secondary" onclick="openJsonModal()">⚙️ Ver/Editar JSON</button>
+    </div>
+  </header>
+
+  <div class="main-grid">
+    <!-- PANEL DE CONTROL / PASOS -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>Asistente de Selección</span>
+        <span style="font-size:12px; font-weight:normal; color:#64748b;">4 Pasos</span>
+      </div>
+
+      <!-- PASO 1 -->
+      <div class="form-group">
+        <label for="selectOrigen">1. Origen / Producto del Cliente:</label>
+        <select id="selectOrigen" onchange="onOrigenChange()">
+          <option value="">-- Seleccione Producto --</option>
+          <option value="clarin_c1">Clarín.com (C1) / Clarín Digital (Mensual o Anual)</option>
+          <option value="clarin_duo">Clarín.com DÚO (C1)</option>
+          <option value="clarin_club">Clarín.com con Club 365 (Clásica o Plus)</option>
+          <option value="abono_suscriptor">No quiere abonar Abono Suscriptor</option>
+          <option value="corporativa">Tiene Suscripción Corporativa + Suscripción Paga</option>
+        </select>
+      </div>
+
+      <!-- PASO 2 -->
+      <div class="form-group" id="groupCondicion">
+        <label for="selectCondicion">2. Condición Comercial Actual:</label>
+        <select id="selectCondicion" onchange="onCondicionChange()">
+          <option value="">-- Seleccione Condición --</option>
+          <option value="precio_lista">Viene con Precio de Lista</option>
+          <option value="promo">Viene con Promo Vigente</option>
+        </select>
+      </div>
+
+      <!-- PASO 3 -->
+      <div class="form-group" id="groupMotivo">
+        <label for="selectMotivo">3. Motivo de Baja:</label>
+        <select id="selectMotivo" onchange="renderResults()">
+          <option value="">-- Seleccione Motivo --</option>
+        </select>
+      </div>
+
+      <!-- PREGUNTAS Y CONDICIONES ADICIONALES -->
+      <div class="toggle-group" id="additionalToggles">
+        <div class="toggle-row" id="rowTarjetaVirtual">
+          <span class="toggle-label">¿Acepta Tarjeta Virtual?</span>
+          <div class="switch-pill">
+            <button id="btnTV_si" class="active" onclick="setVirtualCard(true)">SÍ</button>
+            <button id="btnTV_no" onclick="setVirtualCard(false)">NO</button>
+          </div>
+        </div>
+
+        <div class="toggle-row" id="rowTipo365" style="display:none;">
+          <span class="toggle-label">Tipo de Tarjeta 365:</span>
+          <div class="switch-pill">
+            <button id="btn365_clasica" class="active" onclick="set365Type('Clásica')">Clásica</button>
+            <button id="btn365_plus" onclick="set365Type('Plus')">Plus</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUSCADOR LIBRE -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Filtrar por precio, producto, plan..." oninput="renderResults()">
+      </div>
+    </div>
+
+    <!-- RESULTADOS DINÁMICOS -->
+    <div class="results-area" id="resultsArea">
+      <div class="empty-state">
+        <h3 style="margin-bottom:8px; color:#334155;">Esperando selección del operador</h3>
+        <p style="font-size:13px;">Complete los pasos de la izquierda para desplegar el árbol de herramientas obligatorias, sugeridas y optativas según la normativa vigente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL JSON -->
+<div class="modal-backdrop" id="jsonModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 style="font-size:16px; font-weight:700;">Base de Datos de Reglas y Promociones (JSON)</h3>
+      <button class="btn btn-secondary" onclick="closeJsonModal()">✕ Cerrar</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px; color:#64748b; margin-bottom:10px;">
+        Esta estructura alimenta de forma dinámica toda la aplicación. Se puede modificar directamente para actualizar precios, plazos o instrucciones de carga sin necesidad de modificar el código.
+      </p>
+      <textarea id="jsonEditorArea"></textarea>
+      <div style="margin-top:12px; display:flex; justify-content:space-between;">
+        <button class="btn btn-secondary" onclick="restoreDefaultJson()">Restaurar Original Excel</button>
+        <button class="btn btn-primary" onclick="saveJsonFromEditor()">Guardar y Aplicar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// BASE DE DATOS JSON OFICIAL EXTRAÍDA DIRECTAMENTE DEL EXCEL
+const DEFAULT_RETENTION_DATA = {
+  "meta": {
+    "version": "Desde 01.09.2026",
+    "fecha": "01/09/2026",
+    "fuente": "Desde 01.09.2026 CLARÍN DIGITAL.xlsx",
+    "leyenda_legal_obligatoria": "Finalizado el plazo de promoción abonará precio de lista vigente."
+  },
+  "observaciones_generales": [
+    "Tener en cuenta la info del Cuadro de acciones de retención.",
+    "En caso de retener con herramientas con descuento/pcio. fijo, mencionar que: 'finalizado el plazo de promoción abonará precio de lista vigente'.",
+    "En caso de que el cliente sea retenido con SOLO TARJETA 50% X 4 MESES con 2 ADICIONALES y ya tenga más de 2 adicionales, el sistema cancelará automáticamente las últimas que se dieron de alta por lo que se deberá consultar primero cuáles quiere mantener para eliminar primero las que no desee.",
+    "Para combos de la sección 'Producto', cuando el cliente informe problemas de servicio, se deberá gestionar, además de la herramienta, el Reclamo con Prioridad Alta.",
+    "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE: Cambio de Producto Papel: mantener la categoría de la credencial dependerá del puntaje que otorgue el producto contratado. No se podrán dejar clientes con papel como 'No Socio'.",
+    "La Tarjeta Virtual es categoría Clásica - No permite adicionales.",
+    "Siempre que el motivo de baja sea 'No usa la Tarjeta' o 'No le gustan los beneficios' deberá seleccionarse el motivo 'No lee el diario ni usa la tarjeta' dejando en la nota el motivo de baja identificado.",
+    "No quiere abonar Abono Suscriptor: Solo puede ser cargado con cierre FAVORABLE. Si el cliente no acepta las herramientas ofrecidas, el operador deberá indagar el verdadero motivo de baja e identificarlo en el ticket de CRM.",
+    "Si el cliente manifiesta que para continuar con el servicio quiere la devolución y la bonificación (solo si lo manifiesta), se podrán otorgar ambas (dev. + bonif.).",
+    "Si el cliente acepta una herramienta optativa pero pide que le hagan la devolución del abono suscriptor, se podrá otorgar la herramienta + la devolución.",
+    "En caso de que el cliente tenga Kiosco Clarín (Clarín Epaper), como no hay descuentos para ese producto, se debe utilizar este cuadro de herramientas aplicando el escalonamiento que corresponda según el motivo de baja. El descuento se aplica en el nuevo producto."
+  ],
+  "escenarios": [
+    /* 1. CLARIN C1 - VIENE PRECIO LISTA - NO LEE */
+    {
+      "id": "c1_lista_nolee",
+      "origen": "clarin_c1",
+      "condicion": "precio_lista",
+      "motivos": ["no_lee_no_usa"],
+      "protocolo": null,
+      "minimo_optativas": 1,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM a $1220 x 9 MESES",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com (C1)",
+          "precio": "$1.220 / mes",
+          "duracion": "9 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $1220 x 9 MESES",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención $1220 x 9 MESES",
+          "condiciones": ["+ REVENTA DE PRODUCTO", "No otorga credencial física"],
+          "advertencias": ["Mencionar que finalizado el plazo abonará precio de lista vigente."]
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "SOLO TARJETA $590 x 9 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "1ra Optativa sugerida",
+          "producto": "Elle Digital + 365 Clásica + 2 ADICIONALES",
+          "precio": "$590 / mes",
+          "duracion": "9 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "2 Adicionales",
+          "instruccion": "Digital Elle - Retención Tarjeta con Adicionales - Retención $590 x 9 MESES \n+ CLARIN.COM BONIFICADO AL 100% (Carga: Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["Incluye Clarín.com Bonificado al 100%"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARÍN + OLÉ $590 x 9 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "1ra Optativa alternativa",
+          "producto": "Clarín + Olé Digital",
+          "precio": "$590 / mes",
+          "duracion": "9 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención $590 x 9 MESES",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN + OLÉ DIGITAL bonificado al 100% x 9 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "2da Optativa sugerida",
+          "producto": "Clarín + Olé Digital",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "9 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención 100% x 9 meses",
+          "condiciones": ["Bonificación total"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $500 x 6 MESES + 365 Clásica + ABONO SUSCRIPTOR",
+          "tipo": "optativa",
+          "producto": "Olé Digital + 365 Clásica",
+          "precio": "$500 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Olé - Retención Olé Clásica - Retención OleD $500 x 6 meses",
+          "condiciones": ["Abona Abono Suscriptor"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual con tarjeta 365"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado (No dejar No Socio)",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["Mantener la categoría de la credencial dependerá del puntaje"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 2. CLARIN C1 - VIENE PRECIO LISTA - RESTO DE LOS MOTIVOS */
+    {
+      "id": "c1_lista_resto",
+      "origen": "clarin_c1",
+      "condicion": "precio_lista",
+      "motivos": ["resto_motivos", "economico", "aumento", "servicio", "tecnico", "facturacion"],
+      "protocolo": null,
+      "minimo_optativas": 1,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM a $400 x 9 MESES",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com (C1)",
+          "precio": "$400 / mes",
+          "duracion": "9 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $400 x 9 MESES",
+          "instruccion_sin_tv": "Paywall Clarín - Retencion clarin.com - Retención $400 x 9 meses",
+          "condiciones": ["+ REVENTA DE PRODUCTO"],
+          "advertencias": ["Mencionar que finalizado el plazo abonará precio de lista vigente."]
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "CLARIN.COM $250 x 9 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "1ra Optativa sugerida",
+          "producto": "Clarín.com (C1)",
+          "precio": "$250 / mes",
+          "duracion": "9 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $250 x 9 MESES",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención $250 x 9 meses",
+          "condiciones": ["Opción con/sin TV"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM bonificado al 100% x 6 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "2da Optativa sugerida",
+          "producto": "Clarín.com (C1)",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "6 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención 100% x 6 meses",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención 100% x 6 meses",
+          "condiciones": ["100% bonificado x 6 meses"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $500 x 6 MESES + 365 Clásica + ABONO SUSCRIPTOR",
+          "tipo": "optativa",
+          "producto": "Olé Digital + 365 Clásica",
+          "precio": "$500 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Olé - Retención Olé Clásica - Retención OleD $500 x 6 meses",
+          "condiciones": ["Abona Abono Suscriptor"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual con tarjeta 365"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado (No dejar No Socio)",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["Mantener la categoría de la credencial dependerá del puntaje"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 3. CLARIN C1 - VIENE CON PROMO - NO LEE */
+    {
+      "id": "c1_promo_nolee",
+      "origen": "clarin_c1",
+      "condicion": "promo",
+      "motivos": ["no_lee_no_usa"],
+      "protocolo": null,
+      "minimo_optativas": 1,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM bonificado al 100% x 6 MESES",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com (C1)",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "6 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención 100% x 6 meses",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención 100% x 6 meses",
+          "condiciones": ["+ REVENTA DE PRODUCTO"],
+          "advertencias": []
+        },
+        {
+          "nombre": "SOLO TARJETA $590 x 9 MESES",
+          "tipo": "obligatoria",
+          "producto": "Elle Digital + 365 Clásica + 2 ADICIONALES",
+          "precio": "$590 / mes",
+          "duracion": "9 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "2 Adicionales",
+          "instruccion": "Digital Elle - Retención Tarjeta con Adicionales - Retención $590 x 9 MESES \n+ CLARIN.COM BONIFICADO AL 100% (Carga: Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["Incluye Clarín.com Bonificado al 100%"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARÍN + OLÉ $590 x 9 MESES",
+          "tipo": "obligatoria",
+          "producto": "Clarín + Olé Digital",
+          "precio": "$590 / mes",
+          "duracion": "9 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención $590 x 9 MESES",
+          "condiciones": ["Alternativa obligatoria a SOLO TARJETA"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "CLARÍN + OLÉ DIGITAL bonificado al 100% x 9 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "Optativa sugerida (Promo No Lee)",
+          "producto": "Clarín + Olé Digital",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "9 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención Clarín 100% x 9 meses",
+          "condiciones": ["Bonificación total"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["No dejar como No Socio"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 4. CLARIN C1 - VIENE CON PROMO - RESTO DE LOS MOTIVOS */
+    {
+      "id": "c1_promo_resto",
+      "origen": "clarin_c1",
+      "condicion": "promo",
+      "motivos": ["resto_motivos", "economico", "aumento", "servicio", "tecnico", "facturacion"],
+      "protocolo": null,
+      "minimo_optativas": 1,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM $400 x 9 MESES",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com (C1)",
+          "precio": "$400 / mes",
+          "duracion": "9 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $400 x 9 MESES",
+          "instruccion_sin_tv": "Paywall Clarín - Retencion clarin.com - Retención $400 x 9 meses",
+          "condiciones": ["+ REVENTA DE PRODUCTO"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM $250 x 9 meses",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com (C1)",
+          "precio": "$250 / mes",
+          "duracion": "9 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $250 x 9 MESES",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención $250 x 9 meses",
+          "condiciones": ["Escalón obligatorio 2"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "CLARIN.COM bonificado al 100% x 6 MESES",
+          "tipo": "sugerida",
+          "sugerida_orden": "Optativa sugerida (Promo Resto)",
+          "producto": "Clarín.com (C1)",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "6 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella a elección)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención 100% x 6 meses",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención 100% x 6 meses",
+          "condiciones": ["Bonificación 100%"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["No dejar como No Socio"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 5. CLARIN DUO - NO LEE */
+    {
+      "id": "duo_nolee",
+      "origen": "clarin_duo",
+      "condicion": "todas",
+      "motivos": ["no_lee_no_usa"],
+      "protocolo": "ESCUCHA ACTIVA + CONECTOR EMPÁTICO",
+      "minimo_optativas": 2,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM DÚO bonificado al 100% x 6 MESES + TARJETA VIRTUAL",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com DÚO (C1)",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "6 meses",
+          "credencial": "Tarjeta Virtual (Clásica)",
+          "adicionales": "No permite adicionales",
+          "instruccion": "Paywall Clarín - Retención C1 Virtual Dúo - Retención 100% x 6 meses",
+          "condiciones": ["+ REVENTA DE PRODUCTO", "+ INFO DE PRODUCTO DE TARJETA VIRTUAL"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica o Plus]",
+          "tipo": "sugerida",
+          "sugerida_orden": "Sugerida Dúo",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus - Retención $590 x 6 meses",
+          "condiciones": ["+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)"],
+          "advertencias": []
+        },
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica + 2 ADICIONALES]",
+          "tipo": "sugerida",
+          "sugerida_orden": "Sugerida Dúo con adicionales",
+          "producto": "Elle Digital + 365 Clásica + 2 Adicionales",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "2 Adicionales",
+          "instruccion": "Digital Elle - Retención Tarjeta con Adicional - Retención $590 x 6 meses",
+          "condiciones": ["+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "OLÉ DIGITAL $250 x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Olé Digital",
+          "precio": "$250 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé - Retención OleD $250 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $500 x 6 MESES + 365 Clásica + ABONO SUSCRIPTOR",
+          "tipo": "optativa",
+          "producto": "Olé Digital + 365 Clásica",
+          "precio": "$500 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Olé - Retención Olé Clásica - Retención OleD $500 x 6 meses",
+          "condiciones": ["Abona Abono Suscriptor"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["No dejar como No Socio"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 6. CLARIN DUO - RESTO DE LOS MOTIVOS */
+    {
+      "id": "duo_resto",
+      "origen": "clarin_duo",
+      "condicion": "todas",
+      "motivos": ["resto_motivos", "economico", "aumento", "servicio", "tecnico", "facturacion"],
+      "protocolo": "ESCUCHA ACTIVA + CONECTOR EMPÁTICO",
+      "minimo_optativas": 2,
+      "alerta_servicio": false,
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM DÚO a $400 x 6 MESES + TARJETA VIRTUAL",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com DÚO (C1)",
+          "precio": "$400 / mes",
+          "duracion": "6 meses",
+          "credencial": "Tarjeta Virtual (Clásica)",
+          "adicionales": "No permite adicionales",
+          "instruccion": "Paywall Clarín - Paywall Clarín - Retención C1 Virtual Dúo - Retención $400 x 6 meses",
+          "condiciones": ["+ REVENTA DE PRODUCTO", "+ INFO DE PRODUCTO DE TARJETA VIRTUAL"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM DÚO bonif. al 100% x 6 MESES + TARJETA VIRTUAL",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com DÚO (C1)",
+          "precio": "Bonificado 100% ($0)",
+          "duracion": "6 meses",
+          "credencial": "Tarjeta Virtual (Clásica)",
+          "adicionales": "No permite adicionales",
+          "instruccion": "Paywall Clarín - Paywall Clarín - Retención C1 Virtual Dúo - Retención 100% x 6 meses",
+          "condiciones": ["Escalón obligatorio 2"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [],
+      "optativas": [
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica o Plus]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus - Retención $590 x 6 meses",
+          "condiciones": ["+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $250 x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Olé Digital",
+          "precio": "$250 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé - Retención OleD $250 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $500 x 6 MESES + 365 Clásica + ABONO SUSCRIPTOR",
+          "tipo": "optativa",
+          "producto": "Olé Digital + 365 Clásica",
+          "precio": "$500 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Olé - Retención Olé Clásica - Retención OleD $500 x 6 meses",
+          "condiciones": ["Abona Abono Suscriptor"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["No dejar como No Socio"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 7. CLARIN COMBO CLUB 365 - NO LEE / ECONÓMICO */
+    {
+      "id": "club_actitudinal",
+      "origen": "clarin_club",
+      "condicion": "todas",
+      "motivos": ["no_lee_no_usa", "no_lee_diario", "no_usa_tarjeta", "economico", "aumento"],
+      "protocolo": "ESCUCHA ACTIVA + CONECTOR EMPÁTICO",
+      "minimo_optativas": 2,
+      "alerta_servicio": false,
+      "crm_nota": "Si el motivo es 'No usa la Tarjeta' o 'No le gustan los beneficios', tipificar en CRM: 'No lee el diario ni usa la tarjeta' y detallar en nota.",
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM a $590 x 6 MESES + 365 Clásica o Plus + ABONO SUSCRIPTOR",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com + 365 Clásica o Plus",
+          "precio": "$590 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "Con 365 Clásica si tiene Clásica | Con 365 Plus si tiene Plus",
+          "adicionales": "Según credencial del cliente",
+          "instruccion": "Paywall Clarin - Retencion Clarin.com Clásica/Retención Clarin.com Plus - Retención $590 x 6 meses",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM a $1220 x 9 MESES + 365 Clásica o Plus + BONIF. 100% ABONO SUSCRIPTOR",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com + 365 Clásica o Plus",
+          "precio": "$1.220 / mes (Abono 100% bonificado)",
+          "duracion": "9 meses",
+          "credencial": "Con 365 Clásica si tiene Clásica | Con 365 Plus si tiene Plus",
+          "adicionales": "Según credencial del cliente",
+          "instruccion": "Paywall Clarin - Retencion Clarin.com Clásica/Retención Clarin.com Plus - Retención $1.220 x 9 meses \nCarga CRM: Disconformidad Abono Suscriptor - Cliente reclama bonificación - Bonificación por 9 meses al 100%",
+          "condiciones": ["+ REVENTA DEL CLUB", "Bonificación del 100% en Abono Suscriptor por 9 meses"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [
+        {
+          "nombre": "CLARIN.COM a $400 x 9 MESES + 365 Clásica o Plus + BONIF. 100% ABONO SUSCRIPTOR",
+          "tipo": "sugerida",
+          "sugerida_orden": "Optativa sugerida Club",
+          "producto": "Clarín.com + 365 Clásica o Plus",
+          "precio": "$400 / mes (Abono 100% bonificado)",
+          "duracion": "9 meses",
+          "credencial": "Con 365 Clásica si tiene Clásica | Con 365 Plus si tiene Plus",
+          "adicionales": "Según credencial del cliente",
+          "instruccion": "Paywall Clarin - Retencion Clarin.com Clásica/Retención Clarin.com Plus - Retención $400 x 9 meses \nCarga CRM: Disconformidad Abono Suscriptor - Cliente reclama bonificación - Bonificación por 9 meses al 100%",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        }
+      ],
+      "optativas": [
+        {
+          "nombre": "CLARIN.COM $400 x 6 MESES + TARJETA VIRTUAL",
+          "tipo": "optativa",
+          "producto": "Clarín.com (C1)",
+          "precio": "$400 / mes",
+          "duracion": "6 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $400 por 6 meses",
+          "instruccion_sin_tv": "Paywall Clarín - Retención clarin.com - Retención $400 x 6 meses",
+          "condiciones": ["Pasa a Tarjeta Virtual o sin credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARÍN + OLÉ $590 x 6 meses",
+          "tipo": "optativa",
+          "producto": "Clarín + Olé Digital",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención $590 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica o Plus]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus - Retención $590 x 6 meses \n+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica + 2 ADICIONALES]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica + 2 Adicionales",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "2 Adicionales",
+          "instruccion": "Digital Elle - Retención Tarjeta con Adicional - Retención $590 x 6 meses \n+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $250 x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Olé Digital",
+          "precio": "$250 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé - Retención OleD $250 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 8. CLARIN COMBO CLUB 365 - PROBLEMAS DE SERVICIO / FACTURACIÓN / BENEFICIOS / TÉCNICOS */
+    {
+      "id": "club_problemas",
+      "origen": "clarin_club",
+      "condicion": "todas",
+      "motivos": ["problemas_beneficios", "problemas_facturacion", "tarjeta_no_recibida", "problemas_tecnicos"],
+      "protocolo": "ESCUCHA ACTIVA + CONECTOR EMPÁTICO",
+      "minimo_optativas": 2,
+      "alerta_servicio": true,
+      "alerta_texto": "¡GESTIÓN OBLIGATORIA! Generar en CRM un 'RECLAMO CON PRIORIDAD ALTA' además de otorgar la herramienta de retención.",
+      "obligatorias": [
+        {
+          "nombre": "CLARIN.COM a $590 x 6 MESES + 365 Clásica o Plus + ABONO SUSCRIPTOR",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com + 365 Clásica o Plus",
+          "precio": "$590 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "Con 365 Clásica si tiene Clásica | Con 365 Plus si tiene Plus",
+          "adicionales": "Según credencial del cliente",
+          "instruccion": "RECLAMO PRIORIDAD ALTA + Paywall Clarin - Retencion Clarin.com Clásica/Retención Clarin.com Plus - Retención $590 x 6 meses",
+          "condiciones": ["+ RECLAMO PRIORIDAD ALTA", "+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM a $1220 x 9 MESES + 365 Clásica o Plus + BONIF. 100% ABONO SUSCRIPTOR",
+          "tipo": "obligatoria",
+          "producto": "Clarín.com + 365 Clásica o Plus",
+          "precio": "$1.220 / mes (Abono bonificado)",
+          "duracion": "9 meses",
+          "credencial": "Con 365 Clásica si tiene Clásica | Con 365 Plus si tiene Plus",
+          "adicionales": "Según credencial del cliente",
+          "instruccion": "Paywall Clarin - Retencion Clarin.com Clásica/Retención Clarin.com Plus - Retención $1.220 x 9 meses \nCarga CRM: Disconformidad Abono Suscriptor - Cliente reclama bonificación - Bonificación por 9 meses al 100%",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [],
+      "optativas": [
+        {
+          "nombre": "OLÉ DIGITAL $500 x 6 meses + 365 Clásica + ABONO SUSCRIPTOR",
+          "tipo": "optativa",
+          "producto": "Olé Digital + 365 Clásica",
+          "precio": "$500 / mes + Abono Suscriptor",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Olé - Retención Olé Clásica - Retención OleD $500 x 6 meses",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CAMBIO DE PRODUCTO SEGÚN INTERÉS DEL CLIENTE (Papel)",
+          "tipo": "optativa",
+          "producto": "Diarios y Revistas Papel AGEA",
+          "precio": "50% por 3 meses",
+          "duracion": "3 meses",
+          "credencial": "Dependerá del puntaje contratado",
+          "adicionales": "Según producto papel",
+          "instruccion": "Club - Club Inicial - 50% por 3 meses",
+          "condiciones": ["+ REVENTA DEL CLUB (en caso de que corresponda)"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 9. NO QUIERE ABONAR ABONO SUSCRIPTOR */
+    {
+      "id": "abono_suscriptor_flow",
+      "origen": "abono_suscriptor",
+      "condicion": "todas",
+      "motivos": ["no_quiere_abono_suscriptor"],
+      "protocolo": "ESCUCHA ACTIVA + CONECTOR EMPÁTICO",
+      "minimo_optativas": 2,
+      "alerta_servicio": false,
+      "crm_nota": "Solo puede ser cargado con cierre FAVORABLE. Si el cliente no acepta las herramientas ofrecidas, indagar el verdadero motivo de baja e identificarlo en el ticket de CRM. Si exige devolución y bonificación para continuar, se pueden otorgar ambas.",
+      "obligatorias": [
+        {
+          "nombre": "DEVOLUCIÓN ABONO SUSCRIPTOR 2 MESES",
+          "tipo": "obligatoria",
+          "producto": "Abono Suscriptor",
+          "precio": "Devolución de 2 cuotas",
+          "duracion": "2 meses",
+          "credencial": "Mantiene credencial actual",
+          "adicionales": "Mantiene adicionales actuales",
+          "instruccion": "Carga en CRM: Gestión de Devolución Abono Suscriptor 2 Meses",
+          "condiciones": ["+ REVENTA DEL CLUB", "Solo con cierre favorable"],
+          "advertencias": ["Si pide además bonificación para quedarse, se pueden otorgar ambas."]
+        },
+        {
+          "nombre": "BONIFICACIÓN ABONO SUSCRIPTOR 100% X 3 MESES o X 6 MESES",
+          "tipo": "obligatoria",
+          "producto": "Abono Suscriptor",
+          "precio": "100% bonificado",
+          "duracion": "3 meses o 6 meses",
+          "credencial": "Mantiene credencial actual",
+          "adicionales": "Mantiene adicionales actuales",
+          "instruccion": "Carga en CRM: Bonificación Abono Suscriptor 100% x 3 meses (o x 6 meses)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        }
+      ],
+      "sugeridas": [],
+      "optativas": [
+        {
+          "nombre": "SOLO TARJETA 50% x 4 MESES [Elle + 365 Clásica o Plus]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "50% de descuento",
+          "duracion": "4 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus - 50% x 4 meses \n+ CLARIN.COM bonificado al 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": ["Si el cliente pide devolución además de esta herramienta, se puede otorgar herramienta + devolución."]
+        },
+        {
+          "nombre": "SOLO TARJETA 50% x 4 MESES [Elle + 365 Clásica + 2 ADICIONALES]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica + 2 Adicionales",
+          "precio": "50% de descuento",
+          "duracion": "4 meses",
+          "credencial": "365 Clásica",
+          "adicionales": "Máximo 2 Adicionales",
+          "instruccion": "Digital Elle - Retención Tarjeta con Adicional - 50% x 4 meses \n+ CLARIN.COM bonificado al 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": ["Si ya tiene más de 2 adicionales, el sistema cancelará automáticamente las últimas. Consultar cuáles quiere mantener."]
+        },
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica o Plus / 2 Adicionales]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Hasta 2 adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus / Retención Tarjeta con Adicional - Retención $590 x 6 meses \n+ CLARIN.COM BONIFICADO AL 100% (Ver posteo http://intranet365.agea.com.ar/?p=25893)",
+          "condiciones": ["+ REVENTA DEL CLUB"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM 50% x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Clarín.com",
+          "precio": "50% de descuento",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retencion Clarin.com- Retención 6 meses al 50%",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM $400 x 6 MESES + TARJETA VIRTUAL",
+          "tipo": "optativa",
+          "producto": "Clarín.com",
+          "precio": "$400 / mes",
+          "duracion": "6 meses",
+          "credencial": "Con Tarjeta Virtual (o sin ella)",
+          "adicionales": "No permite adicionales",
+          "instruccion_con_tv": "Paywall Clarín - Retención C1 + 365 Virtual - Retención $400 por 6 meses.",
+          "instruccion_sin_tv": "Paywall Clarín - Retencion clarin.com - Retención $400 x 6 meses",
+          "condiciones": ["Opción con o sin TV"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $250 x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Olé Digital",
+          "precio": "$250 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé - Retención OleD $250 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARÍN + OLÉ $590 x 6 meses",
+          "tipo": "optativa",
+          "producto": "Clarín + Olé Digital",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Clarín+Olé - Retención $590 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        }
+      ]
+    },
+
+    /* 10. SUSCRIPCIÓN CORPORATIVA + PAGA */
+    {
+      "id": "corporativa_flow",
+      "origen": "corporativa",
+      "condicion": "todas",
+      "motivos": ["baja_paga"],
+      "protocolo": "ANÁLISIS DEL PRODUCTO PAGO Y CORPORATIVO",
+      "minimo_optativas": 2,
+      "alerta_servicio": false,
+      "crm_nota": "Ofrecer como mínimo 2 herramientas. Se podrán ofrecer cualquiera de las herramientas optativas a excepción de 100% por 3 y 6 meses. Tener en cuenta qué producto pago tiene el suscriptor, qué es lo que tiene con la Corporativa, si tiene o no adicionales y si desea mantenerlas. Priorizar descuento sobre el producto pago que posee.",
+      "obligatorias": [],
+      "sugeridas": [],
+      "optativas": [
+        {
+          "nombre": "SOLO TARJETA $590 x 6 MESES [Elle + 365 Clásica o Plus]",
+          "tipo": "optativa",
+          "producto": "Elle Digital + 365 Clásica o Plus",
+          "precio": "$590 / mes",
+          "duracion": "6 meses",
+          "credencial": "365 Clásica o Plus",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Digital Elle - Retencion Tarjeta Clásica/Elle Digital Plus - Retención $590 x 6 meses",
+          "condiciones": ["Priorizar si desea conservar beneficios 365"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM 50% x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Clarín.com",
+          "precio": "50% de descuento",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retencion Clarin.com- Retención 6 meses al 50%",
+          "condiciones": ["Descuento sobre producto pago"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL $250 x 6 MESES",
+          "tipo": "optativa",
+          "producto": "Olé Digital",
+          "precio": "$250 / mes",
+          "duracion": "6 meses",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé - Retención OleD $250 x 6 meses",
+          "condiciones": ["No otorga credencial"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $6300",
+          "tipo": "optativa",
+          "producto": "Clarín.com Anual",
+          "precio": "$6.300 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Clarín - Retención Combo anual - Clarin.com Anual $6300",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "OLÉ DIGITAL ANUAL $4800",
+          "tipo": "optativa",
+          "producto": "Olé Digital Anual",
+          "precio": "$4.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "No otorga credencial",
+          "adicionales": "Sin adicionales",
+          "instruccion": "Paywall Olé - Retención Olé anual - Olé Digital Anual $4800",
+          "condiciones": ["Pago único anual"],
+          "advertencias": []
+        },
+        {
+          "nombre": "CLARIN.COM ANUAL $10800 + 365 Clásica",
+          "tipo": "optativa",
+          "producto": "Clarín.com + 365 Clásica",
+          "precio": "$10.800 anual",
+          "duracion": "Anual (12 meses)",
+          "credencial": "365 Clásica",
+          "adicionales": "Según producto",
+          "instruccion": "Paywall Clarín - Retención C2 Anual - Clarin.com + 365 Anual $10800",
+          "condiciones": ["Pago anual"],
+          "advertencias": []
+        }
+      ]
+    }
+  ]
+};
+
+// ESTADO GLOBAL
+let appData = JSON.parse(JSON.stringify(DEFAULT_RETENTION_DATA));
+let state = {
+  origen: "",
+  condicion: "",
+  motivo: "",
+  tarjetaVirtual: true,
+  tipo365: "Clásica",
+  searchQuery: ""
+};
+
+// INICIALIZACIÓN
+function init() {
+  const saved = localStorage.getItem("clarin_retention_json_v1");
+  if (saved) {
+    try {
+      appData = JSON.parse(saved);
+    } catch(e) {
+      console.error("Error al cargar JSON guardado, usando predeterminado.", e);
+    }
+  }
+}
+init();
+
+// MANEJO DE CAMBIOS EN COMBOS
+function onOrigenChange() {
+  const origen = document.getElementById("selectOrigen").value;
+  state.origen = origen;
+  state.condicion = "";
+  state.motivo = "";
+
+  const groupCondicion = document.getElementById("groupCondicion");
+  const selectCondicion = document.getElementById("selectCondicion");
+  const selectMotivo = document.getElementById("selectMotivo");
+  const rowTV = document.getElementById("rowTarjetaVirtual");
+  const row365 = document.getElementById("rowTipo365");
+
+  selectCondicion.value = "";
+  selectMotivo.innerHTML = '<option value="">-- Seleccione Motivo --</option>';
+
+  // Mostrar / ocultar condición
+  if (origen === "clarin_c1") {
+    groupCondicion.style.display = "block";
+  } else {
+    groupCondicion.style.display = "none";
+    state.condicion = "todas";
+  }
+
+  // Switches específicos
+  if (origen === "clarin_club") {
+    row365.style.display = "flex";
+    rowTV.style.display = "none";
+  } else if (origen === "abono_suscriptor" || origen === "corporativa") {
+    row365.style.display = "flex";
+    rowTV.style.display = "none";
+  } else {
+    row365.style.display = "none";
+    rowTV.style.display = "flex";
+  }
+
+  populateMotivos();
+  renderResults();
+}
+
+function onCondicionChange() {
+  state.condicion = document.getElementById("selectCondicion").value;
+  state.motivo = "";
+  populateMotivos();
+  renderResults();
+}
+
+function populateMotivos() {
+  const selectMotivo = document.getElementById("selectMotivo");
+  selectMotivo.innerHTML = '<option value="">-- Seleccione Motivo --</option>';
+
+  if (!state.origen) return;
+
+  if (state.origen === "clarin_c1" || state.origen === "clarin_duo") {
+    selectMotivo.innerHTML += `
+      <option value="no_lee_no_usa">No lee / No lee ni usa</option>
+      <option value="resto_motivos">Resto de los motivos (Económico, Aumento, etc.)</option>
+    `;
+  } else if (state.origen === "clarin_club") {
+    selectMotivo.innerHTML += `
+      <optgroup label="Motivos de Uso / Económicos">
+        <option value="no_lee_no_usa">No lee el diario ni usa la tarjeta</option>
+        <option value="no_lee_diario">No lee el diario</option>
+        <option value="no_usa_tarjeta">No usa la tarjeta o no le gustan los beneficios</option>
+        <option value="economico">Problemas económicos</option>
+        <option value="aumento">Incremento en el costo de la suscripción</option>
+      </optgroup>
+      <optgroup label="Problemas de Servicio / Operativos (Reclamo Alta Prioridad)">
+        <option value="problemas_beneficios">Problemas con Beneficios</option>
+        <option value="problemas_facturacion">Problemas de facturación</option>
+        <option value="tarjeta_no_recibida">Tarjeta no recibida</option>
+        <option value="problemas_tecnicos">Problemas técnicos</option>
+      </optgroup>
+    `;
+  } else if (state.origen === "abono_suscriptor") {
+    selectMotivo.innerHTML += `
+      <option value="no_quiere_abono_suscriptor" selected>No quiere abonar el Abono Suscriptor</option>
+    `;
+    state.motivo = "no_quiere_abono_suscriptor";
+  } else if (state.origen === "corporativa") {
+    selectMotivo.innerHTML += `
+      <option value="baja_paga" selected>Solicita baja de suscripción Paga (mantiene Corporativa)</option>
+    `;
+    state.motivo = "baja_paga";
+  }
+}
+
+function setVirtualCard(val) {
+  state.tarjetaVirtual = val;
+  document.getElementById("btnTV_si").classList.toggle("active", val);
+  document.getElementById("btnTV_no").classList.toggle("active", !val);
+  renderResults();
+}
+
+function set365Type(type) {
+  state.tipo365 = type;
+  document.getElementById("btn365_clasica").classList.toggle("active", type === "Clásica");
+  document.getElementById("btn365_plus").classList.toggle("active", type === "Plus");
+  renderResults();
+}
+
+function resetForm() {
+  document.getElementById("selectOrigen").value = "";
+  document.getElementById("selectCondicion").value = "";
+  document.getElementById("selectMotivo").innerHTML = '<option value="">-- Seleccione Motivo --</option>';
+  document.getElementById("searchInput").value = "";
+  state = {
+    origen: "",
+    condicion: "",
+    motivo: "",
+    tarjetaVirtual: true,
+    tipo365: "Clásica",
+    searchQuery: ""
+  };
+  onOrigenChange();
+}
+
+// COPIAR TEXTO AL PORTAPAPELES
+function copyToClipboard(text, btnElement) {
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = btnElement.innerText;
+    btnElement.innerText = "✓ Copiado";
+    btnElement.style.color = "#16a34a";
+    setTimeout(() => {
+      btnElement.innerText = originalText;
+      btnElement.style.color = "";
+    }, 1500);
+  });
+}
+
+// RENDER DE RESULTADOS
+function renderResults() {
+  const container = document.getElementById("resultsArea");
+  state.motivo = document.getElementById("selectMotivo").value;
+  state.searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+
+  // Si no completó las selecciones básicas
+  if (!state.origen || (!state.motivo && state.origen !== "abono_suscriptor" && state.origen !== "corporativa")) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3 style="margin-bottom:8px; color:#334155;">Esperando selección del operador</h3>
+        <p style="font-size:13px;">Complete los menús de la izquierda para identificar las herramientas de retención exactas.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Buscar el escenario coincidente
+  const escenario = appData.escenarios.find(e => {
+    const matchOrigen = e.origen === state.origen;
+    const matchCond = (e.condicion === "todas") || (e.condicion === state.condicion);
+    const matchMotivo = e.motivos.includes(state.motivo);
+    return matchOrigen && matchCond && matchMotivo;
+  });
+
+  if (!escenario) {
+    container.innerHTML = `
+      <div class="alert-banner alert-warning">
+        <h4>⚠️ Combinación no tipificada en el cuadro</h4>
+        <p>No se encontró un escenario parametrizado para la selección realizada. Por favor revise el origen y motivo ingresados.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Filtrado libre si hay término de búsqueda
+  const filterFn = (item) => {
+    if (!state.searchQuery) return true;
+    const fullText = (item.nombre + " " + item.producto + " " + item.precio + " " + (item.instruccion || "") + " " + (item.instruccion_con_tv || "")).toLowerCase();
+    return fullText.includes(state.searchQuery);
+  };
+
+  const obligatorias = (escenario.obligatorias || []).filter(filterFn);
+  const sugeridas = (escenario.sugeridas || []).filter(filterFn);
+  const optativas = (escenario.optativas || []).filter(filterFn);
+
+  let html = "";
+
+  // 1. PROTOCOLOS O ALERTAS OPERATIVAS
+  if (escenario.protocolo) {
+    html += `
+      <div class="alert-banner alert-protocol">
+        <h4>🎧 PROTOCOLO DE ATENCIÓN: ${escenario.protocolo}</h4>
+        <p>Mantener empatía y escucha activa antes de comunicar cualquier oferta económica.</p>
+      </div>
+    `;
+  }
+
+  if (escenario.alerta_servicio) {
+    html += `
+      <div class="alert-banner alert-high-priority">
+        <h4>🚨 ¡RECLAMO PRIORIDAD ALTA REQUERIDO!</h4>
+        <p>${escenario.alerta_texto || "Debe cargar Reclamo de Prioridad Alta en CRM inmediatamente además de la herramienta."}</p>
+      </div>
+    `;
+  }
+
+  if (escenario.crm_nota) {
+    html += `
+      <div class="alert-banner alert-warning">
+        <h4>📌 TIPIFICACIÓN Y REGLA DE CARGA CRM</h4>
+        <p>${escenario.crm_nota}</p>
+      </div>
+    `;
+  }
+
+  // BANNER DE CONDICIÓN MÍNIMA Y LEYENDA LEGAL
+  html += `
+    <div style="background:#f1f5f9; padding:12px 18px; border-radius:var(--radius-md); font-size:13px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div><strong>Cantidad mínima obligatoria de optativas a ofrecer:</strong> <span style="background:var(--navy-900); color:white; padding:2px 8px; border-radius:10px; font-size:12px;">MÍNIMO ${escenario.minimo_optativas}</span></div>
+      <div style="color:#b91c1c; font-weight:600;">📢 Informar: "${appData.meta.leyenda_legal_obligatoria}"</div>
+    </div>
+  `;
+
+  // 2. BLOQUE OBLIGATORIAS
+  if (obligatorias.length > 0) {
+    html += `
+      <div class="section-mandatory">
+        <div class="section-title">
+          <span>Herramientas Obligatorias</span>
+          <span class="count-badge">${obligatorias.length}</span>
+        </div>
+        <div class="tool-cards-list">
+          ${obligatorias.map(item => renderToolCard(item, "tag-mandatory", "Obligatoria")).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. BLOQUE SUGERIDAS
+  if (sugeridas.length > 0) {
+    html += `
+      <div class="section-suggested">
+        <div class="section-title">
+          <span>Herramientas Optativas Sugeridas (Ofrecimiento Prioritario)</span>
+          <span class="count-badge">${sugeridas.length}</span>
+        </div>
+        <div class="tool-cards-list">
+          ${sugeridas.map(item => renderToolCard(item, "tag-suggested", item.sugerida_orden || "Sugerida")).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. BLOQUE OTRAS OPTATIVAS
+  if (optativas.length > 0) {
+    html += `
+      <div class="section-optional">
+        <div class="section-title">
+          <span>Otras Herramientas Permitidas (Libertad de Ofrecimiento)</span>
+          <span class="count-badge">${optativas.length}</span>
+        </div>
+        <div class="tool-cards-list">
+          ${optativas.map(item => renderToolCard(item, "tag-optional", "Optativa")).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // 5. OBSERVACIONES Y REGLAS PERMANENTES
+  html += `
+    <div class="obs-panel">
+      <h3>Observaciones Operativas Aplicables</h3>
+      <ul>
+        ${appData.observaciones_generales.map(obs => `<li>${obs}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+// RENDER DE TARJETA INDIVIDUAL
+function renderToolCard(tool, badgeClass, badgeLabel) {
+  let cardTypeClass = "card-optional";
+  if (badgeClass === "tag-mandatory") cardTypeClass = "card-mandatory";
+  if (badgeClass === "tag-suggested") cardTypeClass = "card-suggested";
+
+  // Determinar la instrucción de carga correcta según switch de Tarjeta Virtual o tipo 365
+  let instruccion = tool.instruccion || "";
+  if (tool.instruccion_con_tv && tool.instruccion_sin_tv) {
+    instruccion = state.tarjetaVirtual ? tool.instruccion_con_tv : tool.instruccion_sin_tv;
+  }
+
+  // Reemplazar dinámicamente si aplica Clásica / Plus
+  if (state.tipo365) {
+    instruccion = instruccion.replace(/Clásica o Plus/g, state.tipo365);
+    instruccion = instruccion.replace(/Retencion Clarin.com Clásica\/Retención Clarin.com Plus/g, `Retención Clarin.com ${state.tipo365}`);
+  }
+
+  const cleanInstruccionForCopy = instruccion.replace(/\n/g, " ").replace(/"/g, "&quot;");
+
+  return `
+    <div class="tool-card ${cardTypeClass}">
+      <div class="card-header-bar">
+        <div class="card-title-group">
+          <span class="tag-badge ${badgeClass}">${badgeLabel}</span>
+          <span class="card-tool-name">${tool.nombre}</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-details-grid">
+          <div class="detail-item">
+            <div class="label">Producto Incluido</div>
+            <div class="val">${tool.producto || "-"}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Precio / Bonificación</div>
+            <div class="val" style="color:var(--clarin-red);">${tool.precio || "-"}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Duración</div>
+            <div class="val">${tool.duracion || "-"}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Credencial / Tarjeta</div>
+            <div class="val">${tool.credencial || "-"}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Adicionales</div>
+            <div class="val">${tool.adicionales || "-"}</div>
+          </div>
+        </div>
+
+        <div class="instruction-box">
+          <div class="inst-header">
+            <span>Instrucción Exacta de Carga (Paywall / CRM / Club)</span>
+            <button class="copy-btn" onclick="copyToClipboard('${cleanInstruccionForCopy}', this)">📋 Copiar Carga</button>
+          </div>
+          <code class="inst-code">${instruccion.replace(/\n/g, "<br>")}</code>
+        </div>
+
+        ${(tool.condiciones && tool.condiciones.length > 0) || (tool.advertencias && tool.advertencias.length > 0) ? `
+          <div class="card-footer-notes">
+            ${tool.condiciones && tool.condiciones.length ? `<div><strong>Condiciones:</strong> ${tool.condiciones.join(" • ")}</div>` : ""}
+            ${tool.advertencias && tool.advertencias.length ? `<div style="color:#b91c1c; margin-top:2px;"><strong>Advertencia:</strong> ${tool.advertencias.join(" • ")}</div>` : ""}
+          </div>
+        ` : ""}
+      </div>
+    </div>
+  `;
+}
+
+// MODAL PARA EDITAR / VER JSON
+function openJsonModal() {
+  document.getElementById("jsonEditorArea").value = JSON.stringify(appData, null, 2);
+  document.getElementById("jsonModal").style.display = "flex";
+}
+
+function closeJsonModal() {
+  document.getElementById("jsonModal").style.display = "none";
+}
+
+function saveJsonFromEditor() {
+  try {
+    const parsed = JSON.parse(document.getElementById("jsonEditorArea").value);
+    appData = parsed;
+    localStorage.setItem("clarin_retention_json_v1", JSON.stringify(appData));
+    alert("¡Base de datos actualizada y guardada exitosamente!");
+    closeJsonModal();
+    renderResults();
+  } catch(e) {
+    alert("Error de sintaxis JSON: " + e.message);
+  }
+}
+
+function restoreDefaultJson() {
+  if (confirm("¿Seguro que deseas restaurar los datos predeterminados oficiales del Excel?")) {
+    appData = JSON.parse(JSON.stringify(DEFAULT_RETENTION_DATA));
+    localStorage.removeItem("clarin_retention_json_v1");
+    document.getElementById("jsonEditorArea").value = JSON.stringify(appData, null, 2);
+    alert("Restaurado con éxito.");
+    closeJsonModal();
+    renderResults();
+  }
+}
+</script>
+</body>
+</html>
+retencion_clarin_digital.html
+Mostrando retencion_clarin_digital.html.

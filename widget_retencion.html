@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Templates Retención</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--text:#1f2933;--muted:#5b6770;--border:#d9dee5;--accent:#1a5fd0;--ok:#1b8a4b;--x:#0000ff;--tbg:#eef3fb;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181c;--card:#1f2429;--text:#e6e9ed;--muted:#9aa5b1;--border:#343b43;--accent:#6ea2ff;--ok:#4cc380;--x:#6ea2ff;--tbg:#262d36}}
+:root[data-theme="dark"]{--bg:#15181c;--card:#1f2429;--text:#e6e9ed;--muted:#9aa5b1;--border:#343b43;--accent:#6ea2ff;--ok:#4cc380;--x:#6ea2ff;--tbg:#262d36}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:10px}
+.tpl{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:var(--tbg);border-bottom:1px solid var(--border)}
+h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.2px}
+.btn{flex:none;cursor:pointer;border:0;border-radius:7px;background:var(--accent);color:#fff;font:600 13px system-ui,sans-serif;padding:7px 12px}
+:root[data-theme="dark"] .btn{color:#10151a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#10151a}}
+.btn.ok{background:var(--ok)}
+.body{padding:10px;white-space:pre-wrap;word-break:break-word}
+.x{color:var(--x);font-weight:700}
+h1{margin:2px 0 4px;font-size:20px;line-height:1.2}
+.sub{margin:0 0 8px;color:var(--muted)}
+.note{margin:0 0 12px;padding:8px 10px;border-left:3px solid var(--x);background:var(--card);border-radius:0 8px 8px 0;font-size:13px}
+nav{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 10px;margin-bottom:6px;background:var(--bg)}
+nav button{cursor:pointer;border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:999px;padding:6px 11px;font:600 12px system-ui,sans-serif}
+nav button:hover,nav button:focus-visible{background:var(--accent);color:#fff}
+.tpl{scroll-margin-top:var(--navh,60px);transition:box-shadow .3s,border-color .3s}
+.tpl.flash{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)}
+</style>
+</head>
+<body>
+<h1>Retención · Templates</h1>
+<p class="sub">Elegí el template y tocá Copiar.</p>
+<p class="note">Al pegar, reemplazá a mano las <span class="x">XXXXX</span> azules por el dato correspondiente.</p>
+<nav id="nav" aria-label="Templates"></nav>
+<div id="app"></div>
+<script>
+var T=[
+{t:"FALLECIMIENTO",c:[
+"Comprendo [[XX]], lamento mucho la situación, ya le informo el procedimiento en estos casos.",
+"Debe enviar un correo electrónico a la casilla Solicitud365@agea.com.ar, informando DNI de titular, adjuntando una copia de acta de defunción y eso sería todo.",
+"De igual manera le voy a solicitar lo siguiente por si es necesario contactarnos con usted:\nSu nombre completo: \nTeléfono: \nMail: \nDia y horario de contacto: ",
+"Por el momento esto sería todo, lamento la situación. Espero que tenga un buen día! Gracias por comunicarse con 365"]},
+{t:"FALLECIMIENTO CON BAJA WEB",c:[
+"Comprendo [[XX]], lamento mucho la situación, ya le informo el procedimiento en estos casos.",
+"Debe enviar un correo electrónico a la casilla Solicitud365@agea.com.ar, informando DNI de titular, adjuntando una copia de acta de defunción.",
+"De igual manera le voy a solicitar lo siguiente por si es necesario contactarnos con usted:\nSu nombre completo: \nTeléfono: \nMail: \nDia y horario de contacto: ",
+"De igual manera veo que se solicitó la baja por la web, al haber realizado previamente la cancelación desde la web, la suscripción quedó programada para darse de baja automáticamente el último día del mes facturado, que en este caso corresponde a [[XX]]/[[XX]]",
+"Por ese motivo el servicio se mantiene activo hasta el [[XX]]/[[XX]] y a partir de esa fecha la baja se hará efectiva de forma automática según lo indicado desde la web.\nEsto es todo por el momento, espero que se encuentre bien.",
+"Gracias por contactarse con 365!"]},
+{t:"CONTACTO CON TERCERO",c:[
+"Le comento que desde esta área podemos gestionar la baja únicamente cuando la solicitud es efectuada por el titular de la suscripción.",
+"Por este motivo, le solicito que el titular se comunique de lunes a viernes, de 8 a 20 horas, llamando al 0810-333-0365 o contactándose por este canal donde podrán asistirlo con su solicitud.",
+"De todas maneras, visualizo que ya realizaron una gestión de baja a través de nuestra página web💻. La misma cuenta con fecha de finalización para el día [[XXXXX]].",
+"Espero haber podido aclarar su consulta y agradezco mucho su comprensión.",
+"Gracias por comunicarse con 365😃"]},
+{t:"CON SALDO PENDIENTE",c:[
+"Disculpe le menciono también, veo reflejado un saldo impago de $[[XX]], puede abonarlo de la siguiente manera:",
+"💳 Tarjeta de crédito (por teléfono)\nPuede comunicarse con nuestro Centro de Atención al Cliente:\n📞 0810-333-0365\n📞 0800-222-2365\n🕗 Lunes a viernes de 8 a 20 hs.\n✅ El pago impacta en el momento.",
+"🌐 Pago online desde la web\nIngresá a Mi Suscripción:\nwww.autogestion.365.com.ar\n\nLuego hacé clic en “PAGAR” dentro de la sección “Mis Saldos”.\n✅ El pago impacta en el momento.",
+"🏦 PagoMisCuentas (online)\nBusquenos con estos datos:\n* Rubro: Servicios\n* Empresa: Suscripciones 365\n* N.º de Cliente: tu DNI\n⏳ El pago impacta en 24 a 48 hs hábiles.",
+"📱 Mercado Pago\nIngrese a “Pagos”\nToque “Pagar una cuenta nueva”\nBusquenos como “Arte Grafico Editorial Argentino”\nEn “Ingresar dato de la cuenta”, coloque su DNI o CUIL\n⏳ El pago impacta en 24 a 48 hs hábiles.",
+"💵 Pago en efectivo\n* Rapipago (con cupón de pago)\n* Pago Fácil (con DNI)\n⏳ El pago impacta en 48 a 72 hs hábiles."]},
+{t:"CIERRE POR FALTA DE RESPUESTA (CON BAJA WEB)",c:[
+"Debido a la falta de respuesta, procederemos a finalizar este chat.\nDe todas maneras, le confirmo que, al haber realizado previamente la solicitud de baja desde nuestra página web, la suscripción quedó programada para finalizar automáticamente el último día del mes facturado, correspondiente al mes de [[XXX]].",
+"Por este motivo, el servicio se mantendrá activo hasta el día [[XXXX]]. A partir de esa fecha, la baja se hará efectiva de manera automática, tal como fue solicitado desde la web.",
+"Recuerde que, ante cualquier duda, consulta o si desea conocer las promociones disponibles, estamos a su disposición a través de este medio o telefónicamente📱 de lunes a viernes de 8 a 20 horas al 0810-333-0365.",
+"Su número de gestión es [[XXXX]].",
+"Muchas gracias por comunicarse con 365. ¡Que tenga un buen día!😃"]},
+{t:"LLAMADO POR CAMBIO DE SUSCRIPCIÓN",c:[
+"Bueno👍🏻, para poder efectuar el cambio, ¿Puedo comunicarme con usted? Lo único que necesitamos es que cuente con una tarjeta de crédito (medio de pago obligatorio para poder registrar el nuevo beneficio).",
+"Le recuerdo que la suscripción actual se da de baja en el día de hoy a las 23:59 horas. Por este motivo, se realizará el reintegro proporcional correspondiente [[XXXX]].",
+"El nuevo beneficio comenzará a regir a partir del [[[fecha de inicio]]] y hasta el [[[fecha de finalización]]].",
+"De esta manera, podrá comenzar a disfrutar de los beneficios de su nueva suscripción, manteniendo el servicio a un costo mucho más económico y conveniente😃."]}
+];
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+var RE=/\[\[(.+?)\]\](?!\])/g;
+function plain(s){return s.replace(/\[\[\[(.+?)\]\]\]/g,"[$1]").replace(RE,"$1")}
+function html(s){return esc(s).replace(/\[\[\[(.+?)\]\]\]/g,'<span class="x">[$1]</span>').replace(RE,'<span class="x">$1</span>')}
+function copy(text){
+  if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(text).catch(function(){return fb(text)})}
+  return fb(text)
+}
+function fb(text){return new Promise(function(res,rej){
+  var a=document.createElement("textarea");a.value=text;a.style.position="fixed";a.style.opacity="0";
+  document.body.appendChild(a);a.focus();a.select();
+  var ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  document.body.removeChild(a);ok?res():rej()})}
+var app=document.getElementById("app");
+var nav=document.getElementById("nav");
+T.forEach(function(t,i){
+  var raw=t.c.join("\n\n");
+  var d=document.createElement("div");d.className="tpl";d.id="tpl-"+i;
+  var nb=document.createElement("button");nb.type="button";nb.textContent=t.t;
+  nb.addEventListener("click",function(){
+    document.documentElement.style.setProperty("--navh",(nav.offsetHeight+6)+"px");
+    d.scrollIntoView({behavior:"smooth",block:"start"});
+    d.classList.add("flash");setTimeout(function(){d.classList.remove("flash")},1200)});
+  nav.appendChild(nb);
+  d.innerHTML='<div class="head"><h2>'+esc(t.t)+'</h2><button class="btn" type="button">Copiar</button></div><div class="body">'+html(raw)+'</div>';
+  var b=d.querySelector(".btn");
+  b.addEventListener("click",function(){
+    copy(plain(raw)).then(function(){b.textContent="¡Copiado!";b.classList.add("ok")},function(){b.textContent="Error al copiar"});
+    setTimeout(function(){b.textContent="Copiar";b.classList.remove("ok")},1800)});
+  app.appendChild(d)});
+</script>
+</body>
+</html>
